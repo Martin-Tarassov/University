@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using University.Data;
+using Microsoft.Extensions.DependencyInjection;
+
 
 namespace University
 {
@@ -10,13 +12,18 @@ namespace University
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddDbContext<Data.UniversityContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("UniversityContext")));
+                 options.UseSqlServer(builder.Configuration.GetConnectionString("UniversityContext")));
 
-            // Add services to the container.
+            // Add database exception filter for development environment
+            // This will show detailed database errors during development
+
+            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
 
+            CreateDbIfNotExists(app);
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -37,6 +44,28 @@ namespace University
                 .WithStaticAssets();
 
             app.Run();
+        }
+       
+        //luuakse andmebaas, kui see veel ei eksisteeri
+        //ja sisestab sinna algandmed
+        private static void CreateDbIfNotExists(IHost host)
+        {
+            {
+                using (var scope = host.Services.CreateScope())
+                {
+                    var services = scope.ServiceProvider;
+                    try
+                    {
+                        var context = services.GetRequiredService<UniversityContext>();
+                        DbInitializer.Initialize(context);
+                    }
+                    catch (Exception ex)
+                    {
+                        var logger = services.GetRequiredService<ILogger<Program>>();
+                        logger.LogError(ex, "An error occurred creating the DB.");
+                    }
+                }
+            }
         }
     }
 }

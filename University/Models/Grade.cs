@@ -1,6 +1,7 @@
 ﻿namespace University.Models
 {
-    public class Grade
+    public enum Grade
     {
+        A, B, C, D, F
     }
 }
