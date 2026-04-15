@@ -20,7 +20,7 @@ namespace University.Data
             modelBuilder.Entity<Student>().ToTable("Student");
 
             modelBuilder.Entity<Enrollment>()
-             .HasKey(e => new { e.CourseID, e.StudentID });
+             .HasKey(e => new { e.CourseId, e.StudentId });
 
             modelBuilder.Entity<Student>().HasKey(s => s.ID);
         }  
