@@ -22,7 +22,7 @@ namespace University.Data
             modelBuilder.Entity<Enrollment>()
              .HasKey(e => new { e.CourseId, e.StudentId });
 
-            modelBuilder.Entity<Student>().HasKey(s => s.ID);
+            modelBuilder.Entity<Student>().HasKey(s => s.Id);
         }  
     }
 }

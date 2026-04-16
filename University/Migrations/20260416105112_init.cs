@@ -45,7 +45,7 @@ namespace University.Migrations
                 name: "Student",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FirstMidName = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -53,7 +53,7 @@ namespace University.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Student", x => x.ID);
+                    table.PrimaryKey("PK_Student", x => x.Id);
                 });
         }
 
