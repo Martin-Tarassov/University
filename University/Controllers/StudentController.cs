@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using University.Data;
+using University.ViewModel;
 
 
 namespace University.Controllers
@@ -52,15 +53,46 @@ namespace University.Controllers
             var student = await _context.Students
                 .FirstOrDefaultAsync(m => m.Id == id);
             
+            var vm = new ViewModel.StudentDetailsViewModel
+            {
+                Id = student.Id,
+                LastName = student.LastName,
+                FirstMidName = student.FirstMidName,
+                EnrollmentDate = student.EnrollmentDate
+            };
+
             //Kui student on null, siis tagastame NotFound() tulemuse
             if (student == null)
             {
                 return NotFound();
             }
-
-            //Kui student on leitud, siis tagastame View(student) tulemused
-            return View(student);
+           
+            //Kui student on leitud, siis tagastame View(vm) tulemused
+            return View(vm);
         }
 
+        public IActionResult Create()
+        {
+
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create(StudentCreateViewModel vm)
+        {
+            if (ModelState.IsValid)
+            {
+                var student = new Models.Student
+                {
+                    LastName = vm.LastName,
+                    FirstMidName = vm.FirstMidName,
+                    EnrollmentDate = vm.EnrollmentDate
+                };
+
+                _context.Add(student);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(vm);
+        }
     }
 }
