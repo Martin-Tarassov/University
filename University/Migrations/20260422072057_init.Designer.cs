@@ -12,7 +12,7 @@ using University.Data;
 namespace University.Migrations
 {
     [DbContext(typeof(UniversityContext))]
-    [Migration("20260416105112_init")]
+    [Migration("20260422072057_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -68,6 +68,8 @@ namespace University.Migrations
 
                     b.HasKey("CourseId", "StudentId");
 
+                    b.HasIndex("StudentId");
+
                     b.ToTable("Enrollment", (string)null);
                 });
 
@@ -93,6 +95,20 @@ namespace University.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Student", (string)null);
+                });
+
+            modelBuilder.Entity("University.Models.Enrollment", b =>
+                {
+                    b.HasOne("University.Models.Student", null)
+                        .WithMany("Enrollments")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("University.Models.Student", b =>
+                {
+                    b.Navigation("Enrollments");
                 });
 #pragma warning restore 612, 618
         }
