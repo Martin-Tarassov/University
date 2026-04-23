@@ -12,7 +12,7 @@ using University.Data;
 namespace University.Migrations
 {
     [DbContext(typeof(UniversityContext))]
-    [Migration("20260422072057_init")]
+    [Migration("20260423102945_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -28,10 +28,7 @@ namespace University.Migrations
             modelBuilder.Entity("University.Models.Course", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
@@ -99,11 +96,26 @@ namespace University.Migrations
 
             modelBuilder.Entity("University.Models.Enrollment", b =>
                 {
-                    b.HasOne("University.Models.Student", null)
+                    b.HasOne("University.Models.Course", "Course")
+                        .WithMany("Enrollments")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("University.Models.Student", "Student")
                         .WithMany("Enrollments")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("University.Models.Course", b =>
+                {
+                    b.Navigation("Enrollments");
                 });
 
             modelBuilder.Entity("University.Models.Student", b =>

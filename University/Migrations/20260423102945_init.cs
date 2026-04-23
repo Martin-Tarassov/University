@@ -15,8 +15,7 @@ namespace University.Migrations
                 name: "Course",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CourseId = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -55,6 +54,12 @@ namespace University.Migrations
                 {
                     table.PrimaryKey("PK_Enrollment", x => new { x.CourseId, x.StudentId });
                     table.ForeignKey(
+                        name: "FK_Enrollment_Course_CourseId",
+                        column: x => x.CourseId,
+                        principalTable: "Course",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Enrollment_Student_StudentId",
                         column: x => x.StudentId,
                         principalTable: "Student",
@@ -72,10 +77,10 @@ namespace University.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Course");
+                name: "Enrollment");
 
             migrationBuilder.DropTable(
-                name: "Enrollment");
+                name: "Course");
 
             migrationBuilder.DropTable(
                 name: "Student");
