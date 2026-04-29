@@ -129,7 +129,7 @@ namespace University.Controllers
         {
             var student = await _context.Students
                 .FirstOrDefaultAsync(m => m.Id == id);
-            
+
             if (student == null)
             {
                 return NotFound();
@@ -161,9 +161,9 @@ namespace University.Controllers
                 };
 
                 var studentUpdate = student.Id;
-               
+
                 _context.Update(student);
-               
+
                 await _context.SaveChangesAsync();
 
                 //Kui andmed on uuendatud, siis suunab tagasi Update vaatesse, kus saab kohe uuesti andmeid uuendada.
@@ -174,41 +174,74 @@ namespace University.Controllers
             return RedirectToAction(nameof(Index));
         }
         // tehke Delete Get meetod koos vaatega
-       
+
         [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
 
             var student = await _context.Students
+                .Include(s => s.Enrollments)
+                    .ThenInclude(e => e.Course)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (student == null) return NotFound();
-
-            var vm = new StudentIndexViewModel
+            var vm = new StudentDeleteViewModel
             {
                 Id = student.Id,
                 LastName = student.LastName,
                 FirstMidName = student.FirstMidName,
-                EnrollmentDate = student.EnrollmentDate
+                EnrollmentDate = student.EnrollmentDate,
+                EnrollmentsVm = (student.Enrollments ?? Enumerable.Empty<Enrollment>())
+                    .Select(x => new EnrollmentViewModel
+                    {
+                        CourseId = x.CourseId,
+                        Grade = x.Grade,
+                        CourseVm = new CourseViewModel
+                        {
+                            CourseId = x.Course?.CourseId ?? 0,
+                            Title = x.Course?.Title,
+                            Credits = x.Course?.Credits ?? 0
+                        }
+                    }).ToArray()
             };
+
+            if (student == null)
+            {
+                return NotFound();
+            }
 
             return View(vm);
         }
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeletePost(int Id)
         {
-            var student = await _context.Students.FindAsync(id);
-            if (student != null)
+            try
             {
-                _context.Students.Remove(student);
-                await _context.SaveChangesAsync();
-            }
-            return RedirectToAction(nameof(Index));
-        }
+                Student delete = new Student()
+                {
+                    Id = Id,
+                };
+                //teine variant
+                //var delete = await _context.Students
+                //    .FirstOrDefaultAsync(x => x.Id == id);
 
+                _context.Students.Remove(delete);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+
+            }
+            catch (DbUpdateException)
+            {
+                return RedirectToAction(nameof(Delete), new { id = Id, saveChangesError = true });
+                throw;
+            }
+            return RedirectToAction(nameof(Delete));
+
+        }
     }
 }
