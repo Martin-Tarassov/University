@@ -17,15 +17,19 @@ namespace University.Controllers
         {
             _context = context;
         }
-
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+
+            //var students = from s in _context.Students
+            //select s;
             //leiame kõik student'id ja teisendame need StudentIndexViewModel'iks
             //miks peab kasutama await?
             //kui me kasutame await, siis me ootame kuni päring on lõpetatud
             //ja saame tulemuse, enne kui me jätkame koodi täitmist
-            var result = await _context.Students
-                .Select(s => new ViewModel.StudentIndexViewModel
+            var students = _context.Students
+                .Select(s => new StudentIndexViewModel
                 {
                     Id = s.Id,
                     LastName = s.LastName,
@@ -33,10 +37,34 @@ namespace University.Controllers
                     EnrollmentDate = s.EnrollmentDate
                     //miks kasutame ToListAsync()?
                     //kui me kasutame ToListAsync(), siis me saame tulemuse listina
-                }).ToListAsync();
+
+                });
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    students = students.OrderByDescending(s => s.LastName);
+                    break;
+
+                case "Date":
+                    students = students.OrderBy(s => s.EnrollmentDate);
+                    break;
+
+                case "date_desc":
+                    students = students.OrderByDescending(s => s.EnrollmentDate);
+                    break;
+
+                default:
+                    students = students.OrderBy(s => s.LastName);
+                    break;
+            }
+
+            var result = await students.ToListAsync();
 
             return View(result);
         }
+
+
 
         public async Task<IActionResult> Details(int? id)
         {
@@ -124,26 +152,28 @@ namespace University.Controllers
             }
             return View(vm);
         }
+
         [HttpGet]
         public async Task<IActionResult> Update(int id)
         {
             var student = await _context.Students
                 .FirstOrDefaultAsync(m => m.Id == id);
 
+            //kui sutudent on null, siis on NotFound()
             if (student == null)
             {
                 return NotFound();
             }
 
-            //tuleb teha domaini mudelist andmete ülekanne view mudeli omasse
-
             var vm = new StudentUpdateViewModel
             {
                 Id = student.Id,
-                LastName = student.LastName,
                 FirstMidName = student.FirstMidName,
+                LastName = student.LastName,
                 EnrollmentDate = student.EnrollmentDate
             };
+
+            //tuleb teha domaini modelist andmete ülekanne view modeli omasse
             return View(vm);
         }
 
@@ -161,10 +191,12 @@ namespace University.Controllers
                 };
 
                 var studentUpdate = student.Id;
-
+                //lisame student'i andmebaasi ja salvestame muudatused
                 _context.Update(student);
-
+                //miks kasutame await?
+                //kui me kasutame await, siis me ootame kuni salvestamine on lõpetatud
                 await _context.SaveChangesAsync();
+                //pärast salvestamist suuname kasutaja tagasi Index vaatesse
 
                 //Kui andmed on uuendatud, siis suunab tagasi Update vaatesse, kus saab kohe uuesti andmeid uuendada.
                 //Hetkel suunab Indexi vaatesse peale uuendust
@@ -173,7 +205,6 @@ namespace University.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-        // tehke Delete Get meetod koos vaatega
 
         [HttpGet]
         public async Task<IActionResult> Delete(int? id)
@@ -218,13 +249,15 @@ namespace University.Controllers
             return View(vm);
         }
 
-        public async Task<IActionResult> DeletePost(int Id)
+
+        //tuleb teha ankeedi kustutamise nupp
+        public async Task<IActionResult> DeletePost(int id)
         {
             try
             {
                 Student delete = new Student()
                 {
-                    Id = Id,
+                    Id = id,
                 };
                 //teine variant
                 //var delete = await _context.Students
@@ -233,15 +266,13 @@ namespace University.Controllers
                 _context.Students.Remove(delete);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-
             }
             catch (DbUpdateException)
             {
-                return RedirectToAction(nameof(Delete), new { id = Id, saveChangesError = true });
+                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
                 throw;
             }
             return RedirectToAction(nameof(Delete));
-
         }
     }
 }
