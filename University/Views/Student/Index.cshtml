@@ -11,6 +11,16 @@
     <a asp-action="Create">Create New</a>
 </p>
 
+<form asp-action="Index" method="get">
+     <div class="form-actions no-color">
+        <p>
+            <label>Title: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Filter" />
+            <a asp-action="Index">Back to Full List</a>
+        </p>
+   </div>
+</form>
+
 <h4>Student</h4>
 <hr />
 
@@ -18,47 +28,38 @@
     <thead>
         <tr>
             <th>
-                <a asp-action ="Index" asp-route-sortOrder="@ViewData["NameSorParm"]">@Html.DisplayNameFor(model => model.LastName)</a>>             
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSorParm"]">@Html.DisplayNameFor(model => model.LastName)</a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FirstMidName)
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">@Html.DisplayNameFor(model => model.EnrollmentDate)</a>>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">@Html.DisplayNameFor(model => model.EnrollmentDate)</a>
             </th>
-        </th></th>
-
-        </th>
+            <th></th>
+        </tr>
     </thead>
 
     <tbody>
-        @foreach (var item in Model) 
-        { 
-        <tr>
-            <td>
-                @Html.DisplayFor(model => item.LastName)
-            </td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => item.LastName)
+                </td>
 
-            <td>
-                @Html.DisplayFor(model => item.FirstMidName)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.EnrollmentDate)
-            </td>
+                <td>
+                    @Html.DisplayFor(model => item.FirstMidName)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.EnrollmentDate)
+                </td>
                 <td>
                     <a asp-action="Update" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
-        </tr>
+            </tr>
         }
     </tbody>
 </table>
-
-
-
-
-
-
-
-

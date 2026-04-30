@@ -17,10 +17,11 @@ namespace University.Controllers
         {
             _context = context;
         }
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string sortOrder, string searchString)
         {
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewData["CurrentFiltler"] = searchString;
 
             //var students = from s in _context.Students
             //select s;
@@ -39,7 +40,12 @@ namespace University.Controllers
                     //kui me kasutame ToListAsync(), siis me saame tulemuse listina
 
                 });
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                students = students.Where(s => s.LastName.Contains(searchString)
+                                    || s.FirstMidName.Contains(searchString));
 
+            }
             switch (sortOrder)
             {
                 case "name_desc":
@@ -63,8 +69,6 @@ namespace University.Controllers
 
             return View(result);
         }
-
-
 
         public async Task<IActionResult> Details(int? id)
         {
@@ -172,7 +176,6 @@ namespace University.Controllers
                 LastName = student.LastName,
                 EnrollmentDate = student.EnrollmentDate
             };
-
             //tuleb teha domaini modelist andmete ülekanne view modeli omasse
             return View(vm);
         }
@@ -202,7 +205,6 @@ namespace University.Controllers
                 //Hetkel suunab Indexi vaatesse peale uuendust
                 return RedirectToAction(nameof(Update), new { id = studentUpdate });
             }
-
             return RedirectToAction(nameof(Index));
         }
 
@@ -213,8 +215,6 @@ namespace University.Controllers
             {
                 return NotFound();
             }
-
-
             var student = await _context.Students
                 .Include(s => s.Enrollments)
                     .ThenInclude(e => e.Course)
