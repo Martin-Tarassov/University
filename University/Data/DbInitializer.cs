@@ -1,12 +1,9 @@
-﻿using System.Diagnostics;
-using University.Models;
+﻿using University.Models;
 
 namespace University.Data
 {
     public static class DbInitializer
     {
-  
-
         public static void Initialize(UniversityContext context)
         {
             // Ensure the database is created
@@ -24,7 +21,8 @@ namespace University.Data
                 new Student{FirstMidName="Gytis",LastName="Barzdukas",EnrollmentDate=DateTime.Parse("2012-09-01")},
                 new Student{FirstMidName="Yan",LastName="Li",EnrollmentDate=DateTime.Parse("2012-09-01")},
                 new Student{FirstMidName="Peggy",LastName="Justice",EnrollmentDate=DateTime.Parse("2011-09-01")},
-                new Student{FirstMidName="Laura",LastName="Norman",EnrollmentDate=DateTime.Parse("2013-09-01")}
+                new Student{FirstMidName="Laura",LastName="Norman",EnrollmentDate=DateTime.Parse("2013-09-01")},
+                new Student{FirstMidName="Nino",LastName="Olivetto",EnrollmentDate=DateTime.Parse("2005-09-01")}
             };
             foreach (Student s in students)
             {
@@ -47,20 +45,21 @@ namespace University.Data
                 context.Courses.Add(c);
             }
             context.SaveChanges();
+
             var enrollments = new Enrollment[]
             {
-                 new Enrollment{StudentId=1,CourseId=1050,Grade=Grade.A},
-                 new Enrollment{StudentId=1,CourseId=4022,Grade=Grade.C},
-                 new Enrollment{StudentId=1,CourseId=4041,Grade=Grade.B},
-                 new Enrollment{StudentId=2,CourseId=1045,Grade=Grade.B},
-                 new Enrollment{StudentId=2,CourseId=3141,Grade=Grade.F},
-                 new Enrollment{StudentId=2,CourseId=2021,Grade=Grade.F},
-                 new Enrollment{StudentId=3,CourseId=1050},
-                 new Enrollment{StudentId=4,CourseId=1050},
-                 new Enrollment{StudentId=4,CourseId=4022,Grade=Grade.F},
-                 new Enrollment{StudentId=5,CourseId=4041,Grade=Grade.C},
-                 new Enrollment{StudentId=6,CourseId=1045},
-                 new Enrollment{StudentId=7,CourseId=3141,Grade=Grade.A}
+                new Enrollment{StudentId=1,CourseId=1050,Grade=Grade.A},
+                new Enrollment{StudentId=1,CourseId=4022,Grade=Grade.C},
+                new Enrollment{StudentId=1,CourseId=4041,Grade=Grade.B},
+                new Enrollment{StudentId=2,CourseId=1045,Grade=Grade.B},
+                new Enrollment{StudentId=2,CourseId=3141,Grade=Grade.F},
+                new Enrollment{StudentId=2,CourseId=2021,Grade=Grade.F},
+                new Enrollment{StudentId=3,CourseId=1050},
+                new Enrollment{StudentId=4,CourseId=1050},
+                new Enrollment{StudentId=4,CourseId=4022,Grade=Grade.F},
+                new Enrollment{StudentId=5,CourseId=4041,Grade=Grade.C},
+                new Enrollment{StudentId=6,CourseId=1045},
+                new Enrollment{StudentId=7,CourseId=3141,Grade=Grade.A}
             };
             foreach (Enrollment e in enrollments)
             {

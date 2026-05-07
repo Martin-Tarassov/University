@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using University.Data;
 using University.Models;
+using University.Utilities;
 using University.ViewModel;
 
 namespace University.Controllers
@@ -17,14 +18,26 @@ namespace University.Controllers
         {
             _context = context;
         }
-        public async Task<IActionResult> Index(string sortOrder, string searchString)
+
+        public async Task<IActionResult> Index(string sortOrder, string searchString, int? pageNumber, string currentFilter)
         {
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+
+            ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
-            ViewData["CurrentFiltler"] = searchString;
+            ViewData["CurrentFilter"] = searchString;
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
 
             //var students = from s in _context.Students
-            //select s;
+            //               select s;
+
             //leiame kõik student'id ja teisendame need StudentIndexViewModel'iks
             //miks peab kasutama await?
             //kui me kasutame await, siis me ootame kuni päring on lõpetatud
@@ -38,14 +51,14 @@ namespace University.Controllers
                     EnrollmentDate = s.EnrollmentDate
                     //miks kasutame ToListAsync()?
                     //kui me kasutame ToListAsync(), siis me saame tulemuse listina
-
                 });
+
             if (!string.IsNullOrEmpty(searchString))
             {
                 students = students.Where(s => s.LastName.Contains(searchString)
                                     || s.FirstMidName.Contains(searchString));
-
             }
+
             switch (sortOrder)
             {
                 case "name_desc":
@@ -67,7 +80,9 @@ namespace University.Controllers
 
             var result = await students.ToListAsync();
 
-            return View(result);
+            int pageSize = 3;
+
+            return View(await PaginatedList<StudentIndexViewModel>.CreateAsync(students.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -138,7 +153,7 @@ namespace University.Controllers
         public async Task<IActionResult> Create(StudentCreateViewModel vm)
         {
             //kui model on valiidne, siis loome uue student'i ja salvestame selle andmebaasi
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 var student = new Models.Student
                 {
@@ -176,6 +191,7 @@ namespace University.Controllers
                 LastName = student.LastName,
                 EnrollmentDate = student.EnrollmentDate
             };
+
             //tuleb teha domaini modelist andmete ülekanne view modeli omasse
             return View(vm);
         }
@@ -205,6 +221,7 @@ namespace University.Controllers
                 //Hetkel suunab Indexi vaatesse peale uuendust
                 return RedirectToAction(nameof(Update), new { id = studentUpdate });
             }
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -215,6 +232,8 @@ namespace University.Controllers
             {
                 return NotFound();
             }
+
+
             var student = await _context.Students
                 .Include(s => s.Enrollments)
                     .ThenInclude(e => e.Course)
@@ -272,6 +291,7 @@ namespace University.Controllers
                 return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
                 throw;
             }
+
             return RedirectToAction(nameof(Delete));
         }
     }
