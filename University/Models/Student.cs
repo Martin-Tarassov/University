@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace University.Models
 {
@@ -6,9 +7,10 @@ namespace University.Models
     {
         public int Id { get; set; }
         public string LastName { get; set; }
+
+        [Column("FirstName")]
         public string FirstMidName { get; set; }
-        public DateTime EnrollmentDate { get;  set; }
-        
+        public DateTime EnrollmentDate { get; set; }
         public ICollection<Enrollment> Enrollments { get; set; }
     }
 }
