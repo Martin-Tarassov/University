@@ -4,20 +4,27 @@ namespace University.Models
 {
     public class Instructor
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int CourseId { get; set; }
+        public int Id { get; set; }
 
-        public string Title { get; set; }
+        public string LastName { get; set; }
 
-        public int Credits { get; set; }
+        [Column("FirstName")]
+        public string FirstMidName { get; set; }
 
-        public int DepartmentId { get; set; }
+        public DateTime EnrollmentDate { get; set; }
 
-        public Department Departments { get; set; }
-
-        public ICollection<Enrollment> Enrollments { get; set; }
-
+        //mis on ICollection??
+        //ICollection on üldine kogutüüp, mis võimaldab hoida mitut objekti.
+        //See on kasulik, kui soovite hoida näiteks mitut kursust, mida õpetaja õpetab.
+        //ICollection võimaldab teil lisada, eemaldada ja hallata neid objekte kogu kogus.
         public ICollection<CourseAssignment> CourseAssignments { get; set; }
-    }
 
+        //miks siin ei kasutata ICollection, vaid lihtsalt OfficeAssignment?
+        //Sest OfficeAssignment on üks-ühele seos Instructoriga, st iga õpetaja
+        //võib omada ainult ühte kontoripinda. Seega ei ole vaja kasutada
+        //ICollectioni, kuna ei ole vaja hoida mitut OfficeAssignment objekti.
+        //Kui kasutaksime ICollectioni, siis see tähendaks, et õpetaja
+        //võiks omada mitut kontoripinda, mis ei ole meie mudelis korrektne.
+        public OfficeAssignment OfficeAssignments { get; set; }
+    }
 }

@@ -6,22 +6,30 @@ namespace University.Data
     public class UniversityContext : DbContext
     {
         public UniversityContext(DbContextOptions<UniversityContext> options) : base(options)
-        {
-        
-        }
+        { }
+
         public DbSet<Course> Courses { get; set; }
-        public DbSet<Student> Students { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
+        public DbSet<Student> Students { get; set; }
+        public DbSet<Department> Department { get; set; }
+        public DbSet<Instructor> Instructors { get; set; }
+        public DbSet<OfficeAssignment> OfficeAssignments { get; set; }
+        public DbSet<CourseAssignment> CourseAssignment { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Course>().ToTable("Course");
             modelBuilder.Entity<Enrollment>().ToTable("Enrollment");
             modelBuilder.Entity<Student>().ToTable("Student");
+            modelBuilder.Entity<Department>().ToTable("Department");
+            modelBuilder.Entity<Instructor>().ToTable("Instructor");
+            modelBuilder.Entity<OfficeAssignment>().ToTable("OfficeAssignments");
+            modelBuilder.Entity<CourseAssignment>().ToTable("CourseAssignments");
 
-            modelBuilder.Entity<Enrollment>()
-             .HasKey(e => new { e.CourseId, e.StudentId });
+            modelBuilder.Entity<CourseAssignment>()
+                 .HasKey(c => new { c.CourseId, c.InstructorId });
 
-            modelBuilder.Entity<Student>().HasKey(s => s.Id);
-        }  
+        }
     }
 }
