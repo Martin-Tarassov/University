@@ -1,42 +1,36 @@
-﻿@model University.ViewModel.CourseVM.CourseUpdateViewModel
+﻿@model University.ViewModel.CourseVM.CourseIndexViewModel
 
 @{
-    ViewData["Title"] = "Update Course";
+    ViewData["Title"] = "Create Course";
 }
 
 <h1>@ViewData["Title"]</h1>
 
-<form asp-action="Update">
-    <input type="hidden" asp-for="CourseId" />
-
+<form asp-action="Create">
     <div class="form-group">
-        <label asp-for="CourseId" class="control-label">Course Number</label>
-        <input asp-for="CourseId" class="form-control" disabled />
+        <label asp-for="CourseId" class="control-label">Number</label>
+        <input asp-for="CourseId" class="form-control" />
+        <span asp-validation-for="CourseId" class="text-danger"></span>
     </div>
-
     <div class="form-group">
         <label asp-for="Title" class="control-label"></label>
         <input asp-for="Title" class="form-control" />
         <span asp-validation-for="Title" class="text-danger"></span>
     </div>
-
     <div class="form-group">
         <label asp-for="Credits" class="control-label"></label>
         <input asp-for="Credits" class="form-control" />
         <span asp-validation-for="Credits" class="text-danger"></span>
     </div>
-
     <div class="form-group">
         <label asp-for="DepartmentId" class="control-label">Department</label>
-        <select asp-for="DepartmentId" class="form-control" asp-items="Model.DepartmentList">
+        <select asp-for="DepartmentId" class="form-control" asp-items="ViewBag.DepartmentID">
             <option value="">-- Select Department --</option>
         </select>
         <span asp-validation-for="DepartmentId" class="text-danger"></span>
     </div>
-    
-    <br />
     <div class="form-group">
-        <input type="submit" value="Save" class="btn btn-primary" />
+        <input type="submit" value="Create" class="btn btn-primary" />
     </div>
 </form>
 

@@ -12,8 +12,8 @@ using University.Data;
 namespace University.Migrations
 {
     [DbContext(typeof(UniversityContext))]
-    [Migration("20260526115119_TableAdd")]
-    partial class TableAdd
+    [Migration("20260528062629_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,7 +36,7 @@ namespace University.Migrations
                     b.Property<int>("Credits")
                         .HasColumnType("int");
 
-                    b.Property<int?>("DepartmentId")
+                    b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -189,9 +189,13 @@ namespace University.Migrations
 
             modelBuilder.Entity("University.Models.Course", b =>
                 {
-                    b.HasOne("University.Models.Department", null)
+                    b.HasOne("University.Models.Department", "Department")
                         .WithMany("Course")
-                        .HasForeignKey("DepartmentId");
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("University.Models.CourseAssignment", b =>

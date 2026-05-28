@@ -5,7 +5,7 @@ namespace University.Models
     public class Department
     {
         public int DepartmentId { get; set; }
-        public string Name { get; set; }
+        public string DepartmentName { get; set; }
 
         [Column(TypeName = "money")]
         public decimal Budget { get; set; }

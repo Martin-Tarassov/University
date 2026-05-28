@@ -1,4 +1,7 @@
-﻿using University.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using University.Models;
+using System;
+using System.Linq;
 
 namespace University.Data
 {
@@ -6,13 +9,14 @@ namespace University.Data
     {
         public static void Initialize(UniversityContext context)
         {
-            // Ensure the database is created
-            context.Database.EnsureCreated();
-            // Look for any students already in the database
+            context.Database.EnsureDeleted();
+            context.Database.Migrate();
+
             if (context.Students.Any())
             {
-                return;   // DB has been seeded
+                return;
             }
+
             var students = new Student[]
             {
                 new Student{FirstMidName="Carson",LastName="Alexander",EnrollmentDate=DateTime.Parse("2010-09-01")},
@@ -30,15 +34,29 @@ namespace University.Data
             }
             context.SaveChanges();
 
+            var departments = new Department[]
+            {
+                  new Department { DepartmentName = "English", Budget = 350000, StartDate = DateTime.Parse("2007-09-01") },
+                  new Department { DepartmentName = "Mathematics", Budget = 100000, StartDate = DateTime.Parse("2007-09-01") },
+                  new Department { DepartmentName = "Engineering", Budget = 350000, StartDate = DateTime.Parse("2007-09-01") },
+                  new Department { DepartmentName = "Economics", Budget = 200000, StartDate = DateTime.Parse("2007-09-01") }
+            };
+
+            foreach (Department d in departments)
+            {
+                context.Department.Add(d);
+            }
+            context.SaveChanges();
+
             var courses = new Course[]
             {
-                new Course{CourseId=1050,Title="Chemistry",Credits=3},
-                new Course{CourseId=4022,Title="Microeconomics",Credits=3},
-                new Course{CourseId=4041,Title="Macroeconomics",Credits=3},
-                new Course{CourseId=1045,Title="Calculus",Credits=4},
-                new Course{CourseId=3141,Title="Trigonometry",Credits=4},
-                new Course{CourseId=2021,Title="Composition",Credits=3},
-                new Course{CourseId=2042,Title="Literature",Credits=4}
+                new Course{Id=1050, CourseId=1050, Name="Chemistry", Title="Chemistry", Credits=3, DepartmentId=3},
+                new Course{Id=4022, CourseId=4022, Name="Microeconomics", Title="Microeconomics", Credits=3, DepartmentId=4},
+                new Course{Id=4041, CourseId=4041, Name="Macroeconomics", Title="Macroeconomics", Credits=3, DepartmentId=4},
+                new Course{Id=1045, CourseId=1045, Name="Calculus", Title="Calculus", Credits=4, DepartmentId=2},
+                new Course{Id=3141, CourseId=3141, Name="Trigonometry", Title="Trigonometry", Credits=4, DepartmentId=2},
+                new Course{Id=2021, CourseId=2021, Name="Composition", Title="Composition", Credits=3, DepartmentId=1},
+                new Course{Id=2042, CourseId=2042, Name="Literature", Title="Literature", Credits=4, DepartmentId=1}
             };
             foreach (Course c in courses)
             {
