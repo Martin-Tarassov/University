@@ -37,6 +37,7 @@ namespace University.Controllers
 
             return View(courses);
         }
+
         [HttpGet]
         public async Task<IActionResult> Update(int? id)
         {
@@ -70,10 +71,10 @@ namespace University.Controllers
             {
                 var course = new Course
                 {
-                    Id = vm.CourseId, 
+                    Id = vm.CourseId,
                     CourseId = vm.CourseId,
                     Title = vm.Title,
-                    Name = vm.Title,  
+                    Name = vm.Title,
                     Credits = vm.Credits,
                     DepartmentId = vm.DepartmentId
                 };
@@ -86,6 +87,37 @@ namespace University.Controllers
 
             vm.DepartmentList = new SelectList(_context.Department, "DepartmentId", "DepartmentName", vm.DepartmentId);
             return View(vm);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var course = await _context.Courses
+                .Where(c => c.CourseId == id)
+                .Select(c => new CourseDetailsViewModel
+                {
+                    CourseId = c.CourseId,
+                    Credits = c.Credits,
+                    Title = c.Title,
+                    DepartmentId = c.DepartmentId,
+                    Department = new CourseDepartmentIndexViewModel
+                    {
+                        DepartmentName = c.Department.DepartmentName
+                    }
+                })
+                .FirstOrDefaultAsync();
+
+            if (course == null)
+            {
+                return NotFound();
+            }
+
+            return View(course);
         }
     }
 }

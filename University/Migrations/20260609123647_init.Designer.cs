@@ -12,7 +12,7 @@ using University.Data;
 namespace University.Migrations
 {
     [DbContext(typeof(UniversityContext))]
-    [Migration("20260528062629_init")]
+    [Migration("20260609123647_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -80,12 +80,12 @@ namespace University.Migrations
                     b.Property<decimal>("Budget")
                         .HasColumnType("money");
 
-                    b.Property<int?>("InstructorId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
+                    b.Property<string>("DepartmentName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("InstructorId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
