@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using University.Models;
 
 namespace University.Data
@@ -16,7 +16,6 @@ namespace University.Data
         public DbSet<OfficeAssignment> OfficeAssignments { get; set; }
         public DbSet<CourseAssignment> CourseAssignment { get; set; }
         public DbSet<FileToApi> FileToApis { get; set; }
-        public DbSet<Department> Department => Departments;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

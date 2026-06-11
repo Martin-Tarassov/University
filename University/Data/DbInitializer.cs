@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using University.Models;
 using System;
 using System.Linq;
@@ -9,7 +9,6 @@ namespace University.Data
     {
         public static void Initializer(UniversityContext context)
         {
-            context.Database.EnsureDeleted();
             context.Database.Migrate();
 
             if (context.Students.Any())
@@ -44,7 +43,7 @@ namespace University.Data
 
             foreach (Department d in departments)
             {
-                context.Department.Add(d);
+                context.Departments.Add(d);
             }
             context.SaveChanges();
 
