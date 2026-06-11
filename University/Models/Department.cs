@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace University.Models
 {
@@ -6,6 +8,13 @@ namespace University.Models
     {
         public int DepartmentId { get; set; }
         public string DepartmentName { get; set; }
+
+        [NotMapped]
+        public string Name
+        {
+            get => DepartmentName;
+            set => DepartmentName = value;
+        }
 
         [Column(TypeName = "money")]
         public decimal Budget { get; set; }

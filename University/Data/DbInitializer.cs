@@ -7,7 +7,7 @@ namespace University.Data
 {
     public static class DbInitializer
     {
-        public static void Initialize(UniversityContext context)
+        public static void Initializer(UniversityContext context)
         {
             context.Database.EnsureDeleted();
             context.Database.Migrate();
