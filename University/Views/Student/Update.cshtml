@@ -1,37 +1,30 @@
-﻿@model University.ViewModel.CourseVM.CourseUpdateViewModel
+﻿@model University.ViewModel.StudentUpdateViewModel
 
 @{
-    ViewData["Title"] = "Update Course";
+    ViewData["Title"] = "Update Student";
 }
 
 <h1>@ViewData["Title"]</h1>
 
 <form asp-action="Update">
-    <input type="hidden" asp-for="CourseId" />
+    <input type="hidden" asp-for="Id" />
 
     <div class="form-group">
-        <label asp-for="CourseId" class="control-label">Course Number</label>
-        <input asp-for="CourseId" class="form-control" disabled />
+        <label asp-for="FirstMidName" class="control-label">First Name</label>
+        <input asp-for="FirstMidName" class="form-control" />
+        <span asp-validation-for="FirstMidName" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Title" class="control-label"></label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
+        <label asp-for="LastName" class="control-label">Last Name</label>
+        <input asp-for="LastName" class="form-control" />
+        <span asp-validation-for="LastName" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Credits" class="control-label"></label>
-        <input asp-for="Credits" class="form-control" />
-        <span asp-validation-for="Credits" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="DepartmentId" class="control-label">Department</label>
-        <select asp-for="DepartmentId" class="form-control" asp-items="Model.DepartmentList">
-            <option value="">-- Select Department --</option>
-        </select>
-        <span asp-validation-for="DepartmentId" class="text-danger"></span>
+        <label asp-for="EnrollmentDate" class="control-label">Enrollment Date</label>
+        <input asp-for="EnrollmentDate" class="form-control" type="date" />
+        <span asp-validation-for="EnrollmentDate" class="text-danger"></span>
     </div>
     
     <br />

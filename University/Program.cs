@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using University.Data;
 using Microsoft.Extensions.DependencyInjection;
-
+using University.ServiceInterface;
+using University.Services;
 
 namespace University
 {
@@ -20,6 +21,8 @@ namespace University
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddScoped<IFileServices, FileServices>();
 
             var app = builder.Build();
 

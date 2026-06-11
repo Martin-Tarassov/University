@@ -11,5 +11,13 @@ namespace University.ViewModel.CourseVM
         public int DepartmentId { get; set; }
 
         public CourseDepartmentIndexViewModel? Department { get; set; }
+
+        public List<FileToApiViewModel> Files { get; set; } = new List<FileToApiViewModel>();
+    }
+
+    public class FileToApiViewModel
+    {
+        public Guid Id { get; set; }
+        public string? ExistingFilePath { get; set; }
     }
 }

@@ -5,23 +5,25 @@
 }
 
 <h2>Courses</h2>
+
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.CourseId)
+                @Html.DisplayNameFor(model => model.First().CourseId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                @Html.DisplayNameFor(model => model.First().Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Credits)
+                @Html.DisplayNameFor(model => model.First().Credits)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Department.DepartmentName)
+                @Html.DisplayNameFor(model => model.First().Department.DepartmentName)
             </th>
             <th></th>
         </tr>

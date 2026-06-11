@@ -3,11 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using University.Data;
 using University.Dto;
 using University.Models;
-
+using University.ServiceInterface;
+using University.ViewModel.CourseVM;
 
 namespace University.Services
 {
-    public class FileServices
+    public class FileServices : IFileServices
     {
         private readonly IHostEnvironment _webHost;
         private readonly UniversityContext _context;
@@ -22,18 +23,16 @@ namespace University.Services
             _context = context;
         }
 
-
-
-        public void FilesToApi(CourseDto dto, Course domain)
+        public void FilesToApi(CourseCreateViewModel vm, Course domain)
         {
             //tingimus, kui File ei ole null või on vähemalt rohkem, kui 0 faili, siis hakkab midagi tegema
-            if (dto.Files != null && dto.Files.Count > 0)
+            if (vm.Files != null && vm.Files.Count > 0)
             {
                 if (!Directory.Exists(_webHost.ContentRootPath + "\\wwwroot\\multipleFileUpload\\"))
                 {
                     Directory.CreateDirectory(_webHost.ContentRootPath + "\\wwwroot\\multipleFileUpload\\");
                 }
-                foreach (var file in dto.Files)
+                foreach (var file in vm.Files)
                 {
                     string uploadsFolder = Path.Combine(_webHost.ContentRootPath, "wwwroot", "multipleFileUpload");
                     string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
@@ -47,13 +46,14 @@ namespace University.Services
                         {
                             Id = Guid.NewGuid(),
                             ExistingFilePath = uniqueFileName,
-                            CourseId = domain.CourseId
+                            CourseId = domain.Id
                         };
                         _context.FileToApis.Add(path);
                     }
                 }
             }
         }
+
         public async Task<FileToApi> RemoveImageFromApi(FileToApiDto dto)
         {
             //kui soovin kustutada, siis pean läbi Id pildi ülesse otsima
@@ -73,8 +73,6 @@ namespace University.Services
             await _context.SaveChangesAsync();
 
             return null;
-            
         }
-
     }
 }

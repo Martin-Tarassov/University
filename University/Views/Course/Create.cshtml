@@ -1,4 +1,4 @@
-﻿@model University.ViewModel.CourseVM.CourseIndexViewModel
+﻿@model University.ViewModel.CourseVM.CourseCreateViewModel
 
 @{
     ViewData["Title"] = "Create Course";
@@ -6,7 +6,7 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<form asp-action="Create">
+<form asp-action="Create" enctype="multipart/form-data">
     <div class="form-group">
         <label asp-for="CourseId" class="control-label">Number</label>
         <input asp-for="CourseId" class="form-control" />
@@ -24,10 +24,14 @@
     </div>
     <div class="form-group">
         <label asp-for="DepartmentId" class="control-label">Department</label>
-        <select asp-for="DepartmentId" class="form-control" asp-items="ViewBag.DepartmentID">
+        <select asp-for="DepartmentId" class="form-control" asp-items="ViewBag.DepartmentId">
             <option value="">-- Select Department --</option>
         </select>
         <span asp-validation-for="DepartmentId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Upload Files</label>
+        <input type="file" name="Files" class="form-control" multiple />
     </div>
     <div class="form-group">
         <input type="submit" value="Create" class="btn btn-primary" />
